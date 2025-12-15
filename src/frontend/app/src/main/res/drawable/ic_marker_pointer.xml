@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="30dp"
+    android:height="28dp"
+    android:viewportWidth="30"
+    android:viewportHeight="28">
+
+    <!-- Filled triangle -->
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M5,0 L25,0 L15,28 Z"/>
+
+    <!-- Outline stroke -->
+    <path
+        android:strokeColor="@color/main_blue"
+        android:strokeWidth="1.5"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M5,0 L25,0 L15,28 Z"/>
+</vector>
