@@ -6,8 +6,8 @@ import java.io.File
 
 interface RecipeRepository {
     suspend fun getRecipes(userId: String): RepoResult<List<Recipe>>
+    suspend fun getRecipeById(userId: String, recipeId: String): RepoResult<Recipe>
     suspend fun addRecipeImage(userId: String, recipeId: String, file: File): RepoResult<Unit>
     suspend fun getUntriedRecipe(userId: String): RepoResult<List<Recipe>>
-
     suspend fun getCookingSteps(userId: String, recipeId: String): RepoResult<List<CookingStep>>
 }

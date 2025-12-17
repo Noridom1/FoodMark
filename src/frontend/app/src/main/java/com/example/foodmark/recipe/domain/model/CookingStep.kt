@@ -10,4 +10,5 @@ data class CookingStep (
     val step_number: Int,
     val title: String,
     val instruction: String,
+    val created_at: String = ""
 )
