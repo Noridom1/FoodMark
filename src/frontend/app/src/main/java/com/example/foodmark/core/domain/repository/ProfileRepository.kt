@@ -1,7 +1,7 @@
 package com.example.foodmark.core.domain.repository
 
-import com.example.cs426_mobileproject.core.domain.model.Profile
-import com.example.cs426_mobileproject.core.domain.model.RepoResult
+import com.example.foodmark.core.domain.model.Profile
+import com.example.foodmark.core.domain.model.RepoResult
 import java.io.File
 
 interface ProfileRepository {
