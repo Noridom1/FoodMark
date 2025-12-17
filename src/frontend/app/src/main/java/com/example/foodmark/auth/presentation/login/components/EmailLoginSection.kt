@@ -1,4 +1,4 @@
-package com.example.cs426_mobileproject.auth.presentation.login.components
+package com.example.foodmark.auth.presentation.login.components
 
 
 import androidx.compose.foundation.background

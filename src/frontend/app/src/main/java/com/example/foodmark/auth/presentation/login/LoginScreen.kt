@@ -1,4 +1,4 @@
-package com.example.cs426_mobileproject.auth.presentation.login
+package com.example.foodmark.auth.presentation.login
 
 
 import androidx.compose.foundation.clickable
@@ -11,12 +11,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.cs426_mobileproject.LocalTopBarController
-import com.example.cs426_mobileproject.TopBarConfig
-import com.example.cs426_mobileproject.auth.presentation.components.RoundPasswordTextFieldWithTitle
-import com.example.cs426_mobileproject.auth.presentation.components.RoundTextFieldWithTitle
-import com.example.cs426_mobileproject.auth.presentation.components.TwoPartLayoutBegin
-import com.example.cs426_mobileproject.auth.presentation.login.components.ExternalLoginSection
+import com.example.cs426_mobileproject.auth.presentation.login.LoginState
+import com.example.foodmark.LocalTopBarController
+import com.example.foodmark.TopBarConfig
+import com.example.foodmark.auth.presentation.components.RoundPasswordTextFieldWithTitle
+import com.example.foodmark.auth.presentation.components.RoundTextFieldWithTitle
+import com.example.foodmark.auth.presentation.components.TwoPartLayoutBegin
+import com.example.foodmark.auth.presentation.login.components.ExternalLoginSection
 
 
 @Composable

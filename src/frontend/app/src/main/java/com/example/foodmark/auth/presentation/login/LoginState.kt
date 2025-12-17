@@ -1,4 +1,4 @@
-package com.example.cs426_mobileproject.auth.presentation.login
+package com.example.foodmark.auth.presentation.login
 
 
 data class LoginState(

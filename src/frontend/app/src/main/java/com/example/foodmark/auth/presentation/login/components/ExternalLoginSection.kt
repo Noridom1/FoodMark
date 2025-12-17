@@ -1,4 +1,4 @@
-package com.example.cs426_mobileproject.auth.presentation.login.components
+package com.example.foodmark.auth.presentation.login.components
 
 
 import androidx.compose.foundation.layout.*
@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.cs426_mobileproject.auth.presentation.components.GoogleSignInButton
+import com.example.foodmark.auth.presentation.components.GoogleSignInButton
 
 @Composable
 fun ExternalLoginSection(

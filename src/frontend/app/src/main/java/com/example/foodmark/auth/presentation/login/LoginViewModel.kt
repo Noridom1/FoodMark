@@ -1,12 +1,13 @@
-package com.example.cs426_mobileproject.auth.presentation.login
+package com.example.foodmark.auth.presentation.login
 
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cs426_mobileproject.auth.domain.model.AuthResult
-import com.example.cs426_mobileproject.auth.domain.use_cases.LoginWithEmailUseCase
-import com.example.cs426_mobileproject.auth.domain.use_cases.SignInWithGoogleUseCase
+import com.example.cs426_mobileproject.auth.presentation.login.LoginState
+import com.example.foodmark.auth.domain.model.AuthResult
+import com.example.foodmark.auth.domain.use_cases.LoginWithEmailUseCase
+import com.example.foodmark.auth.domain.use_cases.SignInWithGoogleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
