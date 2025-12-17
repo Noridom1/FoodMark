@@ -11,7 +11,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.cs426_mobileproject.auth.presentation.login.LoginState
 import com.example.foodmark.LocalTopBarController
 import com.example.foodmark.TopBarConfig
 import com.example.foodmark.auth.presentation.components.RoundPasswordTextFieldWithTitle
