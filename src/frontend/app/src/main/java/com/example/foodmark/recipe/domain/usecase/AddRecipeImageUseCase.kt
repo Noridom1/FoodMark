@@ -11,9 +11,7 @@ class AddRecipeImageUseCase @Inject constructor(
     private val fileHelper: FileHelper
 ) {
     suspend operator fun invoke(userId: String, recipeId: String, uri: Uri) : RepoResult<Unit> {
-        val resolvedUri = uri
-        val file = fileHelper.uriToFile(resolvedUri!!)
-            ?: return RepoResult.Success(Unit)
-        return recipeRepository.addRecipeImage(recipeId, userId, file)
+        val file = fileHelper.uriToFile(uri) ?: return RepoResult.Error("File error")
+        return recipeRepository.addRecipeImage(userId, recipeId, file)
     }
 }
