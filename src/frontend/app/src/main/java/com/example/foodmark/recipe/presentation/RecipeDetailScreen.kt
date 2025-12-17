@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -36,7 +35,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.DisposableEffectScope
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -54,15 +52,6 @@ import coil.compose.AsyncImage
 import com.example.foodmark.LocalTopBarController
 import com.example.foodmark.TopBarConfig
 import com.example.foodmark.recipe.domain.model.CookingStep
-import kotlin.collections.filter
-import kotlin.collections.forEach
-import kotlin.collections.isNotEmpty
-import kotlin.collections.map
-import kotlin.text.isBlank
-import kotlin.text.isNotBlank
-import kotlin.text.isNotEmpty
-import kotlin.text.split
-import kotlin.text.trim
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -141,7 +130,43 @@ fun RecipeDetailScreen(
             }
         }
         else -> {
+            val recipe = state.recipe
+            LazyColumn(
+                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.primaryContainer),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item {
+                    RecipeHeader(
+                        imageUrl = recipe!!.img_url,
+                        title = recipe.name,
+                        summary = recipe.summary,
+                        onAddImageClick = { imagePicker.launch("image/*") },
+                        isUploadingImage = state.isUploadingImage
+                    )
+                }
 
+                item {
+                    IngredientsSection(ingredients = recipe!!.ingredients)
+                }
+
+                if (state.steps.isNotEmpty()) {
+                    item {
+                        Text("Steps", style = MaterialTheme.typography.titleMedium)
+                    }
+                    items(state.steps, key = { "${it.recipe_id}-${it.step_number}" }) { step ->
+                        CookingStepItem(step = step)
+                    }
+                } else {
+                    item {
+                        Text(
+                            text = "No steps provided.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -155,7 +180,7 @@ private fun RecipeHeader(
     isUploadingImage: Boolean
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        val shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+        val shape = RoundedCornerShape(12.dp)
         if (imageUrl.isBlank()) {
             Box(
                 modifier = Modifier
@@ -242,6 +267,31 @@ private fun IngredientsSection(ingredients: String) {
                     Text("• ", style = MaterialTheme.typography.bodyMedium)
                     Text(ing, style = MaterialTheme.typography.bodyMedium)
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CookingStepItem(step: CookingStep) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
+    ) {
+        Column(Modifier.padding(12.dp)) {
+            Text(
+                text = "Step ${step.step_number}: ${step.title}",
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            if (step.instruction.isNotBlank()) {
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = step.instruction,
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
         }
     }
