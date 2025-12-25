@@ -179,3 +179,38 @@ def add_recipes(user_id, video_info):
 
     data = rpc_res.data
     print(f"✅ Inserted Recipe successfully (user_id={data['user_id']}, recipe_id={data['recipe_id']})")
+
+def parse_price(price_str):
+    if price_str is None:
+        return None
+
+    if isinstance(price_str, (int, float)):
+        return int(price_str)  # already numeric
+
+    # normalize string
+    s = price_str.lower().strip()
+    s = s.replace("đ", "").replace("vnd", "").replace(",", "").strip()
+
+    # handle ranges like "50k-60k" → take average
+    if "-" in s:
+        parts = s.split("-")
+        nums = [parse_price(p) for p in parts if p.strip()]
+        nums = [n for n in nums if n is not None]
+        if nums:
+            return sum(nums) // len(nums)  # average
+        return None
+
+    # match numbers
+    match = re.findall(r"[\d.]+", s)
+    if not match:
+        return None
+
+    num = float(match[0])
+
+    if "k" in s:
+        return int(num * 1000)
+    elif num < 1000:  
+        # Example: "35" → assume "35k"
+        return int(num * 1000)
+    else:
+        return int(num)
