@@ -16,3 +16,16 @@ class Dish(BaseModel):
     price: str
     rating: Optional[float] = None   # e.g. 4.5
     taste: Optional[str] = None      # e.g. "spicy", "sweet and sour"
+
+class Review(BaseModel):
+    title: str
+    rating: float                    # rating for the whole restaurant experience
+    price: Optional[str] = None      # overall price range, e.g. "$$"
+    comment: Optional[str] = None    # optional review text
+
+
+class Restaurant(BaseModel):
+    name: str
+    address: Optional[str] = None
+    dishes: List[Dish] = []
+    reviews: List[Review] = []
