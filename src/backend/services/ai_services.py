@@ -167,3 +167,92 @@ def get_location(address: str):
     else:
         print("Error:", response.status_code, response.text)
         return None
+    
+def recommend_dish(user_id: str, user_lat=None, user_lng=None):
+    # Fetch stores from DB
+    stores = (
+        supabase
+        .table("FoodStore")
+        .select("*")
+        .eq("user_id", user_id)
+        .execute()
+        .data
+    )
+
+    # Build prompt
+    text_prompt = "Bạn là một trợ lý du lịch.\n"
+    text_prompt += "Các quán ăn gần đây:\n"
+
+    for store in stores:
+        # Get dishes for this store
+        dishes = (
+            supabase.table("Dishes")
+            .select("*")
+            .eq("user_id", user_id)
+            .eq("store_id", store["id"])
+            .execute()
+            .data
+        )
+
+        # Get store location
+        store_location = get_location(store["address"])
+        print(store['name'], store_location)
+        if not store_location:
+            continue
+        store_lat, store_lng = store_location["lat"], store_location["lng"]
+
+        # Compute distance
+        distance_km = geodesic((user_lat, user_lng), (store_lat, store_lng)).km
+        
+
+        dish_str = "\n".join([
+            f"  - {dish['dish_id']} | {dish['name']} | {dish.get('price','')} | {dish.get('rating','')} | {dish.get('taste','')}"
+            for dish in dishes
+        ]) if dishes else "Chưa có món ăn"
+
+        text_prompt += (
+            f"- {store['id']} | {store['name']} | {store['address']} | lat={store_lat} | lng={store_lng}"
+            f"{round(distance_km, 2)} km\n"
+            f"  Món ăn:\n{dish_str}\n"
+        )
+
+    text_prompt += "\nNhiệm vụ của bạn:\n"
+    text_prompt += "1. Gợi ý một lộ trình tối ưu để ghé thăm các quán (có thể không cần đi tất cả).\n"
+    text_prompt += "2. Ưu tiên khoảng cách ngắn trước, nhưng vẫn đảm bảo đa dạng món ăn.\n"
+    text_prompt += "3. Trả về kết quả JSON theo schema sau:\n\n"
+    text_prompt += """{
+        "route": [
+            {
+                "id": "store_id",
+                "name": "Tên quán",
+                "address": "Địa chỉ",
+                "lat": lat,
+                "lng": lng
+                "distance_km": 1.2,
+                "recommended_dishes": [
+                    {
+                        "id": "dish_id",
+                        "name": "Tên món",
+                        "price": "100000",
+                        "rating": 4.5,
+                        "taste": "spicy"
+                    }
+                ]
+            }
+        ]
+        "description": "Viết một đoạn hướng dẫn hấp dẫn cho người dùng theo lộ trình food tour này. Bắt đầu từ quán đầu tiên, chỉ dẫn người dùng cách đi tiếp từng quán, nhấn mạnh trải nghiệm ẩm thực tại mỗi điểm, hương vị đặc trưng của các món ăn, khoảng cách giữa các quán, và cảm giác khám phá từng món. Sử dụng ngôn từ sinh động, gợi hình ảnh, kích thích vị giác và tạo cảm giác như đang dẫn người dùng thực sự đi trải nghiệm chuyến food tour này."
+    }"""
+
+    # Call Gemini with schema enforcement
+    client = genai.Client(api_key=settings.google_api_key)
+    response = client.models.generate_content(
+        model="gemini-1.5-pro",
+        contents=text_prompt,
+        config={
+            "response_mime_type": "application/json",
+            "response_schema": RouteRecommendation
+        }
+    )
+
+    # Parse JSON into Pydantic model
+    return RouteRecommendation.model_validate_json(response.text)
