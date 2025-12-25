@@ -63,3 +63,36 @@ class RouteRecommendation(BaseModel):
     route: List[StoreRecommendation]
     description: str
 
+
+def classify_video(video_url):
+    client = genai.Client(api_key=settings.google_api_key)
+    video_bytes = requests.get(video_url).content
+    
+    prompt = """
+    You are given a video. Classify it into exactly one of the following categories:
+
+    0 — Review Food Store: reviews or rates a restaurant, cafe, or food shop.
+    1 — Cooking Guide: teaches or demonstrates how to cook or prepare food.
+    2 — Mukbang: features someone eating large amounts of food, often while interacting with the audience.
+
+    Respond with only the integer 0, 1, or 2 corresponding to the correct category. Do not include any other text.
+    """
+
+    response = client.models.generate_content(
+        model="gemini-1.5-pro",
+        contents=types.Content(
+            parts=[
+                types.Part(
+                    inline_data=types.Blob(data=video_bytes, mime_type='video/mp4')
+                ),
+                types.Part(text=prompt)
+            ]
+        ),
+        config={
+            "response_mime_type": "application/json",
+            "response_schema": int,
+        }
+    )
+
+    print(response.text)
+    return int(response.text)
