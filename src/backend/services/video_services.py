@@ -144,3 +144,38 @@ def add_foodstores(user_id, video_info):
                 print("Error inserting dish:", dish_res.error)
 
     print("✅ All restaurants, dishes, and reviews inserted successfully.")
+
+def add_recipes(user_id, video_info):
+    print("Adding cooking recipe.")
+    print(video_info)
+
+    try:
+        cooking_guide = json.loads(video_info)
+    except json.JSONDecodeError as e:
+        print("Failed to parse video_info:", e)
+        return
+    
+    name = cooking_guide.get('title')
+    summary = cooking_guide.get('summary')
+    ingredients = cooking_guide.get('ingredients', [])
+    cooking_steps = cooking_guide.get('steps', [])
+
+    # Format ingredients into a string (same as before)
+    ingre_list = [f"- {i}" for i in ingredients]
+    formatted_ingredients = "\n".join(ingre_list) if ingre_list else ""
+
+    # Call the Postgres function via RPC
+    rpc_res = supabase.rpc("add_recipe_with_steps", {
+        "p_user_id": user_id,
+        "p_name": name,
+        "p_summary": summary,
+        "p_ingredients": formatted_ingredients,
+        "p_steps": cooking_steps  # must be JSON (list of dicts)
+    }).execute()
+
+    if getattr(rpc_res, "error", None):
+        print("❌ Error inserting recipe with steps:", rpc_res.error)
+        return
+
+    data = rpc_res.data
+    print(f"✅ Inserted Recipe successfully (user_id={data['user_id']}, recipe_id={data['recipe_id']})")
