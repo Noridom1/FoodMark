@@ -76,3 +76,71 @@ def add_user_video(url: str, user_id: str):
     return result.data, None
 
 
+def add_foodstores(user_id, video_info):
+    print("Adding food store.")
+    print(video_info)
+
+    try:
+        restaurants = json.loads(video_info)
+    except json.JSONDecodeError as e:
+        print("Failed to parse video_info:", e)
+        return
+
+    for r in restaurants:
+        name = r.get("name")
+        address = r.get("address", "")
+        dishes = r.get("dishes", [])
+        reviews = r.get("reviews", [])
+
+        # --- Collect reviews into user_note ---
+        comments = []
+        for review in reviews:
+            comment = review.get("comment")
+            if comment:
+                comments.append(f"- {comment}")
+        user_note = "\n".join(comments) if comments else ""
+
+        # --- Convert address -> lat/lng ---
+        location = None
+        if address:
+            geo = get_location(address)
+            if geo:
+                lat, lng = geo["lat"], geo["lng"]
+                location = f"POINT({lng} {lat})"  # WKT for PostGIS geography
+
+        # --- Insert into FoodStore ---
+        store_data = {
+            "user_id": user_id,
+            "name": name,
+            "address": address,
+            "location": location,
+            "user_note": user_note,
+        }
+
+        store_res = supabase.table("FoodStore").insert(store_data).execute()
+        if getattr(store_res, "error", None):
+            print("Error inserting store:", store_res.error)
+            continue
+
+        store = store_res.data[0]
+        store_id = store["id"]
+
+        # --- Insert dishes ---
+        for d in dishes:
+            dish_name = d.get("name")
+            price = d.get("price")
+
+            price = parse_price(price)
+
+            dish_data = {
+                "user_id": user_id,
+                "store_id": store_id,
+                "name": dish_name,
+                "price": price,
+            }
+
+            dish_res = supabase.table("Dishes").insert(dish_data).execute()
+            if getattr(dish_res, "error", None):
+                print("Error inserting dish:", dish_res.error)
+
+    print("✅ All restaurants, dishes, and reviews inserted successfully.")
