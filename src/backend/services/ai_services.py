@@ -49,3 +49,17 @@ class DishRecommendation(BaseModel):
     price: Optional[str] = None
     rating: Optional[float] = None
     taste: Optional[str] = None
+
+class StoreRecommendation(BaseModel):
+    id: str
+    name: str
+    address: str
+    lat: float
+    lng: float
+    distance_km: float
+    recommended_dishes: List[DishRecommendation]
+
+class RouteRecommendation(BaseModel):
+    route: List[StoreRecommendation]
+    description: str
+
