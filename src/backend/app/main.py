@@ -50,3 +50,18 @@ def classify_video():
     ai_service.classify_video(
         video_url="https://plsnwavugnuoppecuogh.supabase.co/storage/v1/object/public/videos/ComLuoi.mp4"
     )
+
+
+@app.post("/foodtour/recommend")
+def get_recommendation(
+    user_id: str = Form(...),
+    user_lat: float = Form(...),
+    user_lng: float = Form(...)
+):
+    result = ai_service.recommend_dish(user_id=user_id, user_lat=user_lat, user_lng=user_lng)
+    print(result)
+    # return {
+    #     "status": "success",
+    #     "data": result
+    # }
+    return result
