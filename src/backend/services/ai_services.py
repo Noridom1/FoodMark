@@ -29,3 +29,23 @@ class Restaurant(BaseModel):
     address: Optional[str] = None
     dishes: List[Dish] = []
     reviews: List[Review] = []
+
+class CookingStep(BaseModel):
+    step_number: int
+    title: str
+    instruction: str
+
+
+class CookingGuide(BaseModel):
+    title: str
+    summary: Optional[str] = None
+    ingredients: List[str]
+    steps: List[CookingStep]
+ 
+
+class DishRecommendation(BaseModel):
+    id: str
+    name: str
+    price: Optional[str] = None
+    rating: Optional[float] = None
+    taste: Optional[str] = None
