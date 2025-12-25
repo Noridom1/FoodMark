@@ -130,3 +130,40 @@ def summarize_video(type, video_url):
     # get_distance("89-91 Nguyen Gia Tri, Binh Thanh")
     # print(recommend_dish(user_id = "cbcf5839-9c3f-499a-b4a6-3302f734776c", user_lat=10, user_lng=104))
     return response.text
+
+def get_distance(address):
+    url = "https://api.distancematrix.ai/maps/api/geocode/json"
+    params = {
+        "address": address,
+        "key": "OOV4afQIsa7SsVlWP1eF1RhrWZbJXA4HP1VTdvUhkqfvXg1cu2lHor0NmrCfASym"
+    }
+
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        # print(data)   # full JSON
+        # Example: extract latitude & longitude
+        if data.get("result"):
+            location = data["result"][0]["geometry"]["location"]
+            print(location)
+    else:
+        print("Error:", response.status_code, response.text)
+
+
+def get_location(address: str):
+    url = "https://api.distancematrix.ai/maps/api/geocode/json"
+    params = {
+        "address": address,
+        "key": "OOV4afQIsa7SsVlWP1eF1RhrWZbJXA4HP1VTdvUhkqfvXg1cu2lHor0NmrCfASym"
+    }
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        # print(data)   # full JSON
+        # Example: extract latitude & longitude
+        if data.get("result"):
+            location = data["result"][0]["geometry"]["location"]
+            return location # {'lat': 10.803837, 'lng': 106.71570589999999}
+    else:
+        print("Error:", response.status_code, response.text)
+        return None
