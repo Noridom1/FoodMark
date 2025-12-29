@@ -1,4 +1,4 @@
-package com.example.cs426_mobileproject.foodtour.presentation
+package com.example.foodmark.foodtour.presentation
 
 import android.Manifest
 import android.content.pm.PackageManager
