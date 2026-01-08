@@ -1,6 +1,6 @@
 # 🍽️ FoodMark
 
-**FoodMark** is a cross-platform application that helps users organize, explore, and share food-related short videos from social media platforms like TikTok. It connects digital food content with real-world experiences—restaurants, recipes, and food adventures.
+**FoodMark** is an application that helps users organize, explore, and share food-related short videos from social media platforms like TikTok. It connects digital food content with real-world experiences—restaurants, recipes, and food adventures.
 
 ## 🚀 Overview
 With the explosion of short-form food videos on platforms such as TikTok, YouTube, and Instagram, users often save numerous videos but struggle to organize or find them later. **FoodMark** solves this by intelligently analyzing food videos and linking them to real-world locations or cooking instructions.
